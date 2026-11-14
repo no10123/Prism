@@ -1,3 +1,27 @@
+:root {
+    --base:     #1e1e2e;
+    --surface:  #313244;
+    --overlay:  #45475a;
+    --text:     #cdd6f4;
+
+    --money:    #f9e2af;
+    --military: #fab387;
+    --naval:    #89b4fa;
+    --PR:       #f5c2e7;
+    --size:     #b4befe;
+    --tech:     #cba6f7;
+    --luck:     #a6e3a1;
+    --hp:       #f38ba8;
+
+    --good:     #a6e3a1;
+    --bad:      #f38ba8;
+
+    --c1: #f38ba8;
+    --c2: #fab387;
+    --c3: #a6e3a1;
+    --c4: #89b4fa;
+}
+
 .hidden {
     display: none;
 }
@@ -10,8 +34,8 @@ body {
     height: 100dvh;
     gap: 12px;
     padding: 12px;
-    background-color: #1e1e2e;
-    color: #cdd6f4;
+    background-color: var(--base);
+    color: var(--text);
     grid-template-columns: 1fr 1.3fr 1fr;
     grid-template-areas:
         "title title  title"
@@ -22,8 +46,8 @@ body {
 }
 
 .castle {
-    border: 3px solid #45475a;
-    background-color: #313244;
+    border: 3px solid var(--overlay);
+    background-color: var(--surface);
     padding: 15px;
     border-radius: 20px;
     margin: 2px 0;
@@ -32,7 +56,7 @@ body {
 }
 
 .selected {
-    border: 3px solid color-mix(in oklab, var(--C), #313244 40%);
+    border: 3px solid color-mix(in oklab, var(--C), var(--surface) 40%);
 }
 
 p {
@@ -46,16 +70,16 @@ h1 {
 }
 
 h1        { grid-area: title; }
-#castle-1 { grid-area: c1; --C: #f38ba8}
-#castle-2 { grid-area: c2; --C: #fab387}
-#castle-3 { grid-area: c3; --C: #a6e3a1}
-#castle-4 { grid-area: c4; --C: #89b4fa}
+#castle-1 { grid-area: c1; --C: var(--c1)}
+#castle-2 { grid-area: c2; --C: var(--c2)}
+#castle-3 { grid-area: c3; --C: var(--c3)}
+#castle-4 { grid-area: c4; --C: var(--c4)}
 #center   { grid-area: center; }
 
-#btn-1 {--c: #f38ba8}
-#btn-2 {--c: #fab387}
-#btn-3 {--c: #a6e3a1}
-#btn-4 {--c: #89b4fa}
+#btn-1 {--c: var(--c1)}
+#btn-2 {--c: var(--c2)}
+#btn-3 {--c: var(--c3)}
+#btn-4 {--c: var(--c4)}
 
 #center {
     display: flex;
@@ -66,9 +90,9 @@ h1        { grid-area: title; }
 button {
     font: inherit;
     padding: 10px;
-    color: #cdd6f4;
-    background-color: #313244;
-    border: 1px solid #45475a;
+    color: var(--text);
+    background-color: var(--surface);
+    border: 1px solid var(--overlay);
     border-radius: 8px;
     cursor: pointer;
     text-align: left;
@@ -95,18 +119,18 @@ button:disabled {
 
 /* highlight colors */
 
-.h-m {--h: #f9e2af}
-.h-M {--h: #fab387}
-.h-n {--h: #89b4fa}
-.h-p {--h: #f5c2e7}
-.h-s {--h: #b4befe}
-.h-t {--h: #cba6f7}
-.h-l {--h: #a6e3a1}
-.h-h {--h: #f38ba8}
+.money    {--h: var(--money)}
+.military {--h: var(--military)}
+.naval    {--h: var(--naval)}
+.PR       {--h: var(--PR)}
+.size     {--h: var(--size)}
+.tech     {--h: var(--tech)}
+.luck     {--h: var(--luck)}
+.hp       {--h: var(--hp)}
 
-.h-g {--h: #a6e3a1}
-.h-b {--h: #f38ba8}
+.good {--h: var(--good)}
+.bad  {--h: var(--bad)}
 
-.h-m, .h-M, .h-n, .h-p, .h-s, .h-t, .h-l, .h-h, .h-g, .h-b {
+.money, .military, .naval, .PR, .size, .tech, .luck, .hp, .good, .bad {
     color: var(--h);
 }
