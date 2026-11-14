@@ -33,8 +33,8 @@ function genCard() {
 function genCards() {
     [btn1,btn2,btn3,btn4].forEach(b => {
         const card = genCard()
-        b.innerText = Object.entries(card)
-            .map(([k, v]) => `${k}: ${v > 0 ? "+" : ""}${v}`)
+        b.innerHTML = Object.entries(card)
+            .map(([k, v]) => `<span class='${k == "military" ? "h-M" : 'h-' + k[0].toLowerCase()}'>${k} </span>: <span class='${v > 0 ? 'h-g' : 'h-b'}'>${v > 0 ? "+" : ""}${v}</span>`)
             .join(", ");
         b.card = card;
     })
@@ -79,6 +79,7 @@ function clickBtn(n) {
             stats = [{castle:castle1},{castle:castle2},{castle:castle3},{castle:castle4}].map(c => ({
                 castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
             rerollTokens = 0;
+            setStats();
         }
         return;
     }
@@ -105,14 +106,14 @@ function setActive(n) {
 function setStats() {
     for (let i = 0; i<stats.length; i++) {
         stats[i].castle.innerHTML = `
-        <p>money:     ${stats[i].money}</p>
-        <p>millitary: ${stats[i].military}</p>
-        <p>naval:     ${stats[i].naval}</p>
-        <p>PR:        ${stats[i].PR}</p>
-        <p>size:      ${stats[i].size}</p>
-        <p>tech:      ${stats[i].tech}</p>
-        <p>luck:      ${stats[i].luck}</p>
-        <p>hp:        ${stats[i].hp}</p>
+        <p class='h-m'>money:     ${stats[i].money}</p>
+        <p class='h-M'>millitary: ${stats[i].military}</p>
+        <p class='h-n'>naval:     ${stats[i].naval}</p>
+        <p class='h-p'>PR:        ${stats[i].PR}</p>
+        <p class='h-s'>size:      ${stats[i].size}</p>
+        <p class='h-t'>tech:      ${stats[i].tech}</p>
+        <p class='h-l'>luck:      ${stats[i].luck}</p>
+        <p class='h-h'>hp:        ${stats[i].hp}</p>
         `
     }
 }

@@ -92,3 +92,21 @@ button:disabled {
     opacity: 0.4;
     cursor: default;
 }
+
+/* highlight colors */
+
+.h-m {--h: #f9e2af}
+.h-M {--h: #fab387}
+.h-n {--h: #89b4fa}
+.h-p {--h: #f5c2e7}
+.h-s {--h: #b4befe}
+.h-t {--h: #cba6f7}
+.h-l {--h: #a6e3a1}
+.h-h {--h: #f38ba8}
+
+.h-g {--h: #a6e3a1}
+.h-b {--h: #f38ba8}
+
+.h-m, .h-M, .h-n, .h-p, .h-s, .h-t, .h-l, .h-h, .h-g, .h-b {
+    color: var(--h);
+}
