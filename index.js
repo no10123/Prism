@@ -14,6 +14,33 @@ const castle4 = document.getElementById("castle-4");
 const stats = [{castle:castle1},{castle:castle2},{castle:castle3},{castle:castle4}].map(c => ({
     castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
 
+const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20]};
+const keys = Object.keys(ranges);
+
+const randInt = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
+
+function genCard() {
+    // good rand pos value from ranges, and bad is rand negative value from ranges.
+    const good = keys[randInt(0, keys.length - 1)];
+    let bad;
+    do {
+        bad = keys[randInt(0, keys.length - 1)];
+    } while (bad === good);
+
+    return {[good]: randInt(1, ranges[good][1]), [bad]: randInt(ranges[bad][0], -1)};
+}
+
+function genCards() {
+    [btn1,btn2,btn3,btn4].forEach(b => {
+        const card = genCard()
+        b.innerText = Object.entries(card)
+            .map(([k, v]) => `${k}: ${v > 0 ? "+" : ""}${v}`)
+            .join(", ");
+        b.card = card;
+    })
+}
+genCards();
+
 let currentCastle = 1;
 let rerollTokens = 0;
 let currentRound = 1;
@@ -40,6 +67,7 @@ function clickBtn(n) {
         btn4.disabled = false;
         currentCastle = 1;
         currentRound = 1 + (n === btnN ? currentRound : 0);
+        genCards();
         setActive(castle1);
         return;
     }
