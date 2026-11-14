@@ -12,6 +12,8 @@ const castle4 = document.getElementById("castle-4");
 
 let currentCastle = 1;
 
+let rerrollTokens = 0;
+
 btnN.disabled = true;
 btnR.disabled = true;
 
@@ -23,6 +25,13 @@ btnN.onclick = () => clickBtn(btnN);
 btnR.onclick = () => clickBtn(btnR);
 
 function clickBtn(n) {
+    if (n === btnR) {
+        rerrollTokens -= 1;
+        n.innerText = `Reroll (tokens: ${rerrollTokens})`;
+        // rerroll options
+        if (rerrollTokens <= 0) {n.disabled = true;}
+        return;
+    }
     n.disabled = true;
     if (n === btnN) {
         btn1.disabled = false;
