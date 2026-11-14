@@ -1,13 +1,94 @@
 .hidden {
-    content: hidden;
+    display: none;
 }
+
+* { box-sizing: border-box; }
 
 body {
+    display: grid;
+    margin: 0;
+    height: 100dvh;
+    gap: 12px;
+    padding: 12px;
     background-color: #1e1e2e;
     color: #cdd6f4;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    grid-template-areas:
+        "title title  title"
+        "c1    center c2"
+        "c3    center c4";
+    min-height: 100dvh;
+    grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
 }
 
-#lvls {
-    display: grid;
-    
+.castle {
+    border: 3px solid #45475a;
+    background-color: #313244;
+    padding: 15px;
+    border-radius: 20px;
+    margin: 2px 0;
+    min-height: 0;
+    overflow: auto;
+}
+
+.selected {
+    border: 3px solid color-mix(in oklab, var(--C), #313244 40%);
+}
+
+p {
+    margin: 2px 0;
+}
+
+h1 {
+    grid-column: 1 / -1;
+    margin: 0;
+    text-align: center;
+}
+
+h1        { grid-area: title; }
+#castle-1 { grid-area: c1; --C: #f38ba8}
+#castle-2 { grid-area: c2; --C: #fab387}
+#castle-3 { grid-area: c3; --C: #a6e3a1}
+#castle-4 { grid-area: c4; --C: #89b4fa}
+#center   { grid-area: center; }
+
+#btn-1 {--c: #f38ba8}
+#btn-2 {--c: #fab387}
+#btn-3 {--c: #a6e3a1}
+#btn-4 {--c: #89b4fa}
+
+#center {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+button {
+    font: inherit;
+    padding: 10px;
+    color: #cdd6f4;
+    background-color: #313244;
+    border: 1px solid #45475a;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.12s, transform 0.08s;
+}
+
+button:hover {
+    border-color: var(--c);
+}
+
+button:active {
+    transform: translateY(1px);
+}
+
+button:focus-visible {
+    outline: 2px solid var(--c);
+    outline-offset: 2px;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: default;
 }
