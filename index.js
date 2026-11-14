@@ -11,7 +11,7 @@ const castle2 = document.getElementById("castle-2");
 const castle3 = document.getElementById("castle-3");
 const castle4 = document.getElementById("castle-4");
 
-const stats = [{castle:castle1},{castle:castle2},{castle:castle3},{castle:castle4}].map(c => ({
+let stats = [castle1,castle2,castle3,castle4].map(c => ({
     castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
 
 const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20]};
@@ -41,6 +41,12 @@ function genCards() {
 }
 genCards();
 
+function useCard(n) {
+    const s = stats[currentCastle - 1];
+    Object.entries(n.card).forEach(([k, v]) => { s[k] += v; });
+    setStats();
+}
+
 let currentCastle = 1;
 let rerollTokens = 0;
 let currentRound = 1;
@@ -69,8 +75,14 @@ function clickBtn(n) {
         currentRound = 1 + (n === btnN ? currentRound : 0);
         genCards();
         setActive(castle1);
+        if (n === btnQ) {
+            stats = [{castle:castle1},{castle:castle2},{castle:castle3},{castle:castle4}].map(c => ({
+                castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
+            rerollTokens = 0;
+        }
         return;
     }
+    useCard(n);
     currentCastle += 1
     if (currentCastle === 5) {
         if (stats.some(s => s.hp <= 0)) {
@@ -104,3 +116,4 @@ function setStats() {
         `
     }
 }
+setStats();
