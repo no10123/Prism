@@ -103,18 +103,25 @@ function setActive(n) {
     n.classList.toggle("selected")
 }
 
+const maxV = {
+    money: 500,
+    military: 50,
+    naval: 10,
+    PR: 100,
+    size: 40,
+    tech: 10,
+    luck: 100,
+    hp: 200
+};
+
 function setStats() {
     for (let i = 0; i<stats.length; i++) {
-        stats[i].castle.innerHTML = `
-        <p class='money'   >money:     ${stats[i].money}</p>
-        <p class='military'>millitary: ${stats[i].military}</p>
-        <p class='naval'   >naval:     ${stats[i].naval}</p>
-        <p class='PR'      >PR:        ${stats[i].PR}</p>
-        <p class='size'    >size:      ${stats[i].size}</p>
-        <p class='tech'    >tech:      ${stats[i].tech}</p>
-        <p class='luck'    >luck:      ${stats[i].luck}</p>
-        <p class='hp'      >hp:        ${stats[i].hp}</p>
-        `
+        stats[i].castle.innerHTML = '';
+        ['money','military','naval','PR','size','tech','luck','hp'].forEach(n => {
+            stats[i].castle.innerHTML += `
+            <p class='${n}'   >${n}:        ${stats[i][n]}</p>
+            <div class="bar"><i style="width: ${Math.max(0,Math.min(stats[i][n]/maxV[n] * 100,100))}%"       class='${n}'></i></div>`
+        })
     }
 }
 setStats();
