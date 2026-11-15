@@ -12,10 +12,11 @@ const castle3 = document.getElementById("castle-3");
 const castle4 = document.getElementById("castle-4");
 
 const round = document.getElementById('round');
-let best = 1;
+let best = Number(localStorage.getItem("best")) || 1;
 const Best = document.getElementById('best');
-let hasBest = false;
+let hasBest = (best > 1);
 let isPBrun = false;
+Best.innerText = `Best: ${best}`;
 
 const Challenge = {name: document.getElementById('name'), rounds: document.getElementById('rounds')};
 
@@ -24,8 +25,13 @@ function showTokens() {
     btnR.disabled = rerollTokens <= 0;
 }
 
-let stats = [castle1,castle2,castle3,castle4].map(c => ({
-    castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
+function makeStats() {
+    return [castle1, castle2, castle3, castle4].map(c => ({
+        castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100
+    }));
+}
+
+let stats = makeStats();
 
 const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20]};
 const keys = Object.keys(ranges);
@@ -141,34 +147,37 @@ function clickBtn(n) {
         btn4.disabled = false;
         currentCastle = 1;
         currentRound = 1 + (n === btnN ? currentRound : 0);
-        if (currentRound >= best) {
+        round.innerText = `Round: ${currentRound}`
+        if (currentRound > best) {
             best = currentRound;
+            localStorage.setItem("best", best);
             Best.innerText = `Best: ${best}`;
             if (hasBest) isPBrun = true;
         }
-        round.innerHTML = `<p style='${isPBrun ? "color: var(--money)" : ""}'>Round: ${currentRound}</p>`;
+        round.classList.toggle("pb", isPBrun)
         challenge.rounds -= 1
         if (challenge.rounds < 1) {
             activateChallenge()
             if (stats.some(s => s.hp <= 0)) {
-                btn1.disabled = false;
-                btn2.disabled = false;
-                btn3.disabled = false;
-                btn4.disabled = false;
+                btn1.disabled = true;
+                btn2.disabled = true;
+                btn3.disabled = true;
+                btn4.disabled = true;
+                btnQ.disabled = false;
             }
         }
         showChallenge()
         genCards();
         setActive(castle1);
         if (n === btnQ) {
-            stats = [castle1,castle2,castle3,castle4].map(c => ({
-                castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
+            stats = makeStats();
             rerollTokens = 0;
             challenge = genChallenge();
             showChallenge();
             showTokens();
             hasBest = true;
             isPBrun = false;
+            round.classList.toggle("pb", isPBrun)
         }
         setStats();
         return;
