@@ -11,6 +11,8 @@ const castle2 = document.getElementById("castle-2");
 const castle3 = document.getElementById("castle-3");
 const castle4 = document.getElementById("castle-4");
 
+const round = document.getElementById('round');
+
 const Challenge = {name: document.getElementById('name'), rounds: document.getElementById('rounds')};
 
 function showTokens() {
@@ -120,12 +122,14 @@ function clickBtn(n) {
         btn4.disabled = false;
         currentCastle = 1;
         currentRound = 1 + (n === btnN ? currentRound : 0);
+        round.innerText = `Round: ${currentRound}`;
         genCards();
         setActive(castle1);
         if (n === btnQ) {
             stats = [{castle:castle1},{castle:castle2},{castle:castle3},{castle:castle4}].map(c => ({
                 castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
             rerollTokens = 0;
+            showTokens();
             setStats();
         }
         return;
