@@ -23,7 +23,7 @@ function showTokens() {
 let stats = [castle1,castle2,castle3,castle4].map(c => ({
     castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
 
-const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20], rerollToken: [0,1]};
+const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20]};
 const keys = Object.keys(ranges);
 
 const pool = {M:{money: 10, military: 2, naval: 1, PR: 5,size: 1, tech: 1, luck: 2, hp: 5},e:ranges}
@@ -165,14 +165,24 @@ const maxV = {
     hp: 200
 };
 
-function setStats() {
+function buildStats() {
     for (let i = 0; i<stats.length; i++) {
         stats[i].castle.innerHTML = '';
         ['money','military','naval','PR','size','tech','luck','hp'].forEach(n => {
             stats[i].castle.innerHTML += `
-            <p class='${n}'   >${n}:        ${stats[i][n]}</p>
-            <div class="bar"><i style="width: ${Math.max(0,Math.min(stats[i][n]/maxV[n] * 100,100))}%"       class='${n}'></i></div>`
+            <p class='${n}' id='c${i}-${n}v'>${n}:        ${stats[i][n]}</p>
+            <div class="bar"><i  id='c${i}-${n}b' style="width: ${Math.max(0,Math.min(stats[i][n]/maxV[n] * 100,100))}%"       class='${n}'></i></div>`
         })
     }
 }
+
+function setStats() {
+    for (let i = 0; i<stats.length; i++) {
+        ['money','military','naval','PR','size','tech','luck','hp'].forEach(n => {
+            document.getElementById(`c${i}-${n}v`).innerText = `${n}:        ${stats[i][n]}`
+            document.getElementById(`c${i}-${n}b`).style.width = `${Math.max(0,Math.min(stats[i][n]/maxV[n] * 100,100))}%`
+        })
+    }
+}
+buildStats();
 setStats();
