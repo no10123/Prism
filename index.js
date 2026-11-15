@@ -12,6 +12,10 @@ const castle3 = document.getElementById("castle-3");
 const castle4 = document.getElementById("castle-4");
 
 const round = document.getElementById('round');
+let best = 1;
+const Best = document.getElementById('best');
+let hasBest = false;
+let isPBrun = false;
 
 const Challenge = {name: document.getElementById('name'), rounds: document.getElementById('rounds')};
 
@@ -25,6 +29,7 @@ let stats = [castle1,castle2,castle3,castle4].map(c => ({
 
 const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20]};
 const keys = Object.keys(ranges);
+
 
 const pool = {M:{money: 10, military: 2, naval: 1, PR: 5,size: 1, tech: 1, luck: 2, hp: 5},e:ranges}
 
@@ -75,7 +80,7 @@ function genChallenge() {
         const need = Math.round(pool.M[stat] * mult);
         return {
             type, stat, need, rounds: 3,
-            text: `every castle needs at least ${need} ${stat} or loose ${(4 - mult) * 10} hp`,
+            text: `every castle needs at least ${need} ${stat} or that castle loose ${(4 - mult) * 10} hp`,
             holds: (all) => all.every(s => s[stat] >= need),
             damage: (4 - mult) * 10,
         };
@@ -96,6 +101,20 @@ function showChallenge() {
     Challenge.rounds.innerText = `rounds left: ${challenge.rounds}`;
 }
 showChallenge();
+
+function activateChallenge() {
+    const type = challenge.type;
+    if (type == 'min') {
+        stats.forEach(s => {
+            if (!challenge.holds([s])) {
+                s.hp -= challenge.damage;
+            }
+        })
+    } else {
+        challenge.resolve(stats);
+    }
+    challenge = genChallenge();
+}
 
 let currentCastle = 1;
 let rerollTokens = 0;
@@ -122,16 +141,36 @@ function clickBtn(n) {
         btn4.disabled = false;
         currentCastle = 1;
         currentRound = 1 + (n === btnN ? currentRound : 0);
-        round.innerText = `Round: ${currentRound}`;
+        if (currentRound >= best) {
+            best = currentRound;
+            Best.innerText = `Best: ${best}`;
+            if (hasBest) isPBrun = true;
+        }
+        round.innerHTML = `<p style='${isPBrun ? "color: var(--money)" : ""}'>Round: ${currentRound}</p>`;
+        challenge.rounds -= 1
+        if (challenge.rounds < 1) {
+            activateChallenge()
+            if (stats.some(s => s.hp <= 0)) {
+                btn1.disabled = false;
+                btn2.disabled = false;
+                btn3.disabled = false;
+                btn4.disabled = false;
+            }
+        }
+        showChallenge()
         genCards();
         setActive(castle1);
         if (n === btnQ) {
-            stats = [{castle:castle1},{castle:castle2},{castle:castle3},{castle:castle4}].map(c => ({
+            stats = [castle1,castle2,castle3,castle4].map(c => ({
                 castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
             rerollTokens = 0;
+            challenge = genChallenge();
+            showChallenge();
             showTokens();
-            setStats();
+            hasBest = true;
+            isPBrun = false;
         }
+        setStats();
         return;
     }
     useCard(n);
