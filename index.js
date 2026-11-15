@@ -11,11 +11,20 @@ const castle2 = document.getElementById("castle-2");
 const castle3 = document.getElementById("castle-3");
 const castle4 = document.getElementById("castle-4");
 
+const Challenge = {name: document.getElementById('name'), rounds: document.getElementById('rounds')};
+
+function showTokens() {
+    btnR.innerText = `Reroll (tokens: ${rerollTokens})`;
+    btnR.disabled = rerollTokens <= 0;
+}
+
 let stats = [castle1,castle2,castle3,castle4].map(c => ({
     castle: c, money: 100, military: 10, naval: 0, PR: 60, size: 20, tech: 3, luck: 7, hp: 100}));
 
-const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20]};
+const ranges = {money: [-30, 20], military: [-1, 3], naval: [-1, 2], PR: [-10, 20],size: [-1, 1], tech: [-1, 1], luck: [-3, 3], hp: [-30, 20], rerollToken: [0,1]};
 const keys = Object.keys(ranges);
+
+const pool = {M:{money: 10, military: 2, naval: 1, PR: 5,size: 1, tech: 1, luck: 2, hp: 5},e:ranges}
 
 const randInt = (lo, hi) => Math.floor(Math.random() * (hi - lo + 1)) + lo;
 
@@ -27,25 +36,64 @@ function genCard() {
         bad = keys[randInt(0, keys.length - 1)];
     } while (bad === good);
 
-    return {[good]: randInt(1, ranges[good][1]), [bad]: randInt(ranges[bad][0], -1)};
+    const card = {[good]: randInt(1, ranges[good][1]), [bad]: randInt(ranges[bad][0], -1)};
+    if (Math.random() < 0.15) card.rerollToken = 1;
+    return card;
+}
+
+function genCardOn(b) {
+    const card = genCard();
+    b.innerHTML = Object.entries(card)
+        .map(([k, v]) => `<span class='${k}'>${k} </span>: <span class='${v > 0 ? 'good' : 'bad'}'>${v > 0 ? "+" : ""}${v}</span>`)
+        .join(", ");
+    b.card = card;
 }
 
 function genCards() {
-    [btn1,btn2,btn3,btn4].forEach(b => {
-        const card = genCard()
-        b.innerHTML = Object.entries(card)
-            .map(([k, v]) => `<span class='${k}'>${k} </span>: <span class='${v > 0 ? 'good' : 'bad'}'>${v > 0 ? "+" : ""}${v}</span>`)
-            .join(", ");
-        b.card = card;
-    })
+    [btn1, btn2, btn3, btn4].forEach(genCardOn);
 }
 genCards();
 
 function useCard(n) {
     const s = stats[currentCastle - 1];
-    Object.entries(n.card).forEach(([k, v]) => { s[k] += v; });
+    for (const [k, v] of Object.entries(n.card)) {
+        if (k === "rerollToken") rerollTokens += v;
+        else s[k] += v;
+    }
+    showTokens();
     setStats();
 }
+
+function genChallenge() {
+    const stat = keys[randInt(0, keys.length - 1)];
+    const type = Math.random() < 0.5 ? "min" : "event";
+
+    if (type === "min") {
+        const mult = randInt(1, 3)
+        const need = Math.round(pool.M[stat] * mult);
+        return {
+            type, stat, need, rounds: 3,
+            text: `every castle needs at least ${need} ${stat} or loose ${(4 - mult) * 10} hp`,
+            holds: (all) => all.every(s => s[stat] >= need),
+            damage: (4 - mult) * 10,
+        };
+    }
+
+    const loss = Math.abs(ranges[stat][0]) * randInt(1, 2);
+    return {
+        type, stat, loss, rounds: 3,
+        text: `every castle loses ${loss} ${stat}`,
+        resolve: (all) => all.forEach(s => { s[stat] -= loss; }),
+    };
+}
+
+let challenge = genChallenge();
+
+function showChallenge() {
+    Challenge.name.innerText = challenge.text;
+    Challenge.rounds.innerText = `rounds left: ${challenge.rounds}`;
+}
+showChallenge();
 
 let currentCastle = 1;
 let rerollTokens = 0;
@@ -60,9 +108,8 @@ btnQ.disabled = true;
 function clickBtn(n) {
     if (n === btnR) {
         rerollTokens -= 1;
-        n.innerText = `Reroll (tokens: ${rerollTokens})`;
-        // rerroll options
-        if (rerollTokens <= 0) {n.disabled = true;}
+        [btn1, btn2, btn3, btn4].forEach(b => { if (!b.disabled) genCardOn(b); });
+        showTokens();
         return;
     }
     n.disabled = true;
