@@ -55,6 +55,7 @@ body {
     margin: 2px 0;
     min-height: 0;
     overflow: auto;
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .selected {
@@ -101,11 +102,11 @@ button {
     transition: border-color 0.12s, transform 0.08s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
     border-color: var(--c);
 }
 
-button:active {
+button:active:not(:disabled) {
     transform: translateY(1px);
 }
 
@@ -161,4 +162,8 @@ button:disabled {
 
 .pb {
     color: var(--money);
+}
+
+.dead {
+    filter: grayscale(0.6)
 }

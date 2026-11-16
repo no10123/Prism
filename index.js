@@ -134,6 +134,7 @@ btnQ.disabled = true;
 
 function clickBtn(n) {
     if (n === btnR) {
+        if (btn1.disabled && btn2.disabled && btn3.disabled && btn4.disabled) return;
         rerollTokens -= 1;
         [btn1, btn2, btn3, btn4].forEach(b => { if (!b.disabled) genCardOn(b); });
         showTokens();
@@ -157,20 +158,6 @@ function clickBtn(n) {
             if (hasBest) isPBrun = true;
         }
         round.classList.toggle("pb", isPBrun)
-        challenge.rounds -= 1
-        if (challenge.rounds < 1) {
-            activateChallenge()
-            if (stats.some(s => s.hp <= 0)) {
-                btn1.disabled = true;
-                btn2.disabled = true;
-                btn3.disabled = true;
-                btn4.disabled = true;
-                btnN.disabled = true;
-                btnQ.disabled = false;
-            }
-        }
-
-        showChallenge()
         genCards();
         setActive(castle1);
         if (n === btnQ) {
@@ -182,6 +169,23 @@ function clickBtn(n) {
             hasBest = true;
             isPBrun = false;
             round.classList.toggle("pb", isPBrun)
+        } else {
+            challenge.rounds -= 1
+            if (challenge.rounds < 1) {
+                activateChallenge()
+                if (stats.some(s => s.hp <= 0)) {
+                    btn1.disabled = true;
+                    btn2.disabled = true;
+                    btn3.disabled = true;
+                    btn4.disabled = true;
+                    btnN.disabled = true;
+                    btnQ.disabled = false;
+                    btnR.disabled = true;
+                    setActive(null);
+                }
+            }
+
+            showChallenge();
         }
         setStats();
         return;
@@ -194,6 +198,9 @@ function clickBtn(n) {
         btn4.disabled = true;
         btnN.disabled = true;
         btnQ.disabled = false;
+        btnR.disabled = true;
+        setActive(null);
+        return;
     }
     currentCastle += 1
     if (currentCastle === 5) {
@@ -227,7 +234,7 @@ const maxV = {
 
 function buildStats() {
     for (let i = 0; i<stats.length; i++) {
-        stats[i].castle.innerHTML = '';
+        stats[i].castle.innerHTML = `<p>Castle ${i + 1}: </p>`;
         ['money','military','naval','PR','size','tech','luck','hp'].forEach(n => {
             stats[i].castle.innerHTML += `
             <p class='${n}' id='c${i}-${n}v'>${n}:        ${stats[i][n]}</p>
@@ -238,6 +245,7 @@ function buildStats() {
 
 function setStats() {
     for (let i = 0; i<stats.length; i++) {
+        stats[i].castle.classList.toggle("dead", stats[i].hp <= 0);
         ['money','military','naval','PR','size','tech','luck','hp'].forEach(n => {
             document.getElementById(`c${i}-${n}v`).innerText = `${n}:        ${stats[i][n]}`
             document.getElementById(`c${i}-${n}b`).style.width = `${Math.max(0,Math.min(stats[i][n]/maxV[n] * 100,100))}%`
