@@ -148,6 +148,8 @@ function clickBtn(n) {
         currentCastle = 1;
         currentRound = 1 + (n === btnN ? currentRound : 0);
         round.innerText = `Round: ${currentRound}`
+
+
         if (currentRound > best) {
             best = currentRound;
             localStorage.setItem("best", best);
@@ -163,9 +165,11 @@ function clickBtn(n) {
                 btn2.disabled = true;
                 btn3.disabled = true;
                 btn4.disabled = true;
+                btnN.disabled = true;
                 btnQ.disabled = false;
             }
         }
+
         showChallenge()
         genCards();
         setActive(castle1);
@@ -183,6 +187,14 @@ function clickBtn(n) {
         return;
     }
     useCard(n);
+    if (stats.some(s => s.hp <= 0)) {
+        btn1.disabled = true;
+        btn2.disabled = true;
+        btn3.disabled = true;
+        btn4.disabled = true;
+        btnN.disabled = true;
+        btnQ.disabled = false;
+    }
     currentCastle += 1
     if (currentCastle === 5) {
         if (stats.some(s => s.hp <= 0)) {
